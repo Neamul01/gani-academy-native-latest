@@ -13,7 +13,11 @@ import Chat from "./screens/Chat";
 const Stack = createStackNavigator();
 const AuthenticatedUserContext = createContext({});
 
-const AuthenticatedUserProvider = ({ children }) => {
+const AuthenticatedUserProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [user, setUser] = useState(null);
   return (
     <AuthenticatedUserContext.Provider value={{ user, setUser }}>
@@ -41,7 +45,7 @@ function AuthStack() {
 }
 
 function RootNavigator() {
-  const { user, setUser } = useContext(AuthenticatedUserContext);
+  const { user, setUser } = useContext<any>(AuthenticatedUserContext);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber

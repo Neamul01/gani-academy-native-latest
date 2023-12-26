@@ -6,5 +6,5 @@
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "App.js"]
+  "include": ["**/*.ts", "**/*.tsx", "App.tsx"]
 }
