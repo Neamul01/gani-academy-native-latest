@@ -39,7 +39,7 @@ const Home = () => {
       const groupsData = groups.docs.map((doc: any) => {
         return { id: doc.id, ...doc.data() };
       });
-      console.log("Current groups in database: ", groupsData);
+      // console.log("Current groups in database: ", groupsData);
 
       setGroups(groupsData);
     });
@@ -87,7 +87,11 @@ const Home = () => {
       <ScrollView>
         {groups.map((group: any) => (
           // <Link key={group.id} href={`/groups/${group.id}`} asChild>
-          <TouchableOpacity key={group.id} style={styles.groupCard}>
+          <TouchableOpacity
+            key={group.id}
+            onPress={() => navigation.navigate("Group", { id: group.id })}
+            style={styles.groupCard}
+          >
             <Text>{group.name}</Text>
             <Text>{group.description}</Text>
           </TouchableOpacity>
