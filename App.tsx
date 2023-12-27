@@ -15,7 +15,7 @@ function RootNavigator() {
   const { user, setUser } = useContext<any>(AuthenticatedUserContext);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    // onAuthStateChanged returns an unsubscriber
+    // -------------------watch and set user
     const unsubscribeAuth = onAuthStateChanged(
       auth,
       async (authenticatedUser) => {
@@ -23,7 +23,6 @@ function RootNavigator() {
         setIsLoading(false);
       }
     );
-    // unsubscribe auth listener on unmount
     return unsubscribeAuth;
   }, [user]);
   if (isLoading) {
