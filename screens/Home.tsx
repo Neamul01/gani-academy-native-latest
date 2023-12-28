@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -11,7 +11,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import colors from "../colors";
-import { Entypo, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import {
   DocumentData,
   addDoc,
@@ -27,7 +27,6 @@ const Home = () => {
   const navigation = useNavigation<any>();
   const [groupsCollectionRef, setGroupsCollectionRef] = useState<any>(null);
   const [groups, setGroups] = useState<any>([]);
-  // const { user, setUser } = useContext<any>(AuthenticatedUserContext);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -35,11 +34,10 @@ const Home = () => {
     setGroupsCollectionRef(ref);
 
     const unsubscribe = onSnapshot(ref, (groups: DocumentData) => {
-      console.log("Current groups in database: ", groups);
+      // console.log("Current groups in database: ", groups);
       const groupsData = groups.docs.map((doc: any) => {
         return { id: doc.id, ...doc.data() };
       });
-      // console.log("Current groups in database: ", groupsData);
 
       setGroups(groupsData);
     });
@@ -86,7 +84,6 @@ const Home = () => {
     <View style={styles.container}>
       <ScrollView>
         {groups.map((group: any) => (
-          // <Link key={group.id} href={`/groups/${group.id}`} asChild>
           <TouchableOpacity
             key={group.id}
             onPress={() => navigation.navigate("Group", { id: group.id })}
@@ -95,7 +92,6 @@ const Home = () => {
             <Text>{group.name}</Text>
             <Text>{group.description}</Text>
           </TouchableOpacity>
-          // </Link>
         ))}
       </ScrollView>
       <View>
@@ -103,12 +99,12 @@ const Home = () => {
           <Ionicons name="add" size={24} color="white" />
         </Pressable>
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => navigation.navigate("Chat")}
         style={styles.chatButton}
       >
         <Entypo name="chat" size={24} color={colors.lightGray} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
