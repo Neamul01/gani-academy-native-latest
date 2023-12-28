@@ -44,3 +44,5 @@ export const AuthenticatedUserProvider = ({
     </AuthenticatedUserContext.Provider>
   );
 };
+
+// android config: 191216961610-eiqreopelk2034un6uhccpukphqs0vdq.apps.googleusercontent.com

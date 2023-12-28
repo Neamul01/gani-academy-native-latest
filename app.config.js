@@ -4,6 +4,7 @@ export default {
   expo: {
     name: "gani-academy",
     slug: "gani-academy",
+    scheme: "gani-academy",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -25,6 +26,7 @@ export default {
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
+      bundleIdentifier: "com.noman01.ganiacademy",
     },
     android: {
       package: "com.noman01.ganiacademy",
@@ -43,6 +45,9 @@ export default {
       storageBucket: process.env.STORAGE_BUCKET,
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
       appId: process.env.APP_ID,
+      eas: {
+        projectId: "38297e3f-739c-4850-9144-6231b878b15a",
+      },
     },
   },
 };
