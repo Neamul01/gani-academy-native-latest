@@ -11,7 +11,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import colors from "../colors";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   DocumentData,
   addDoc,
@@ -20,14 +20,12 @@ import {
 } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { database } from "../config/firebase";
-const catImageUrl =
-  "https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=49ed3252c0b2ffb49cf8b508892e452d";
 
 const Home = () => {
   const navigation = useNavigation<any>();
   const [groupsCollectionRef, setGroupsCollectionRef] = useState<any>(null);
   const [groups, setGroups] = useState<any>([]);
-  const { user } = useAuth();
+  const { user, logOut: logOut } = useAuth();
 
   useEffect(() => {
     const ref = collection(database, "groups");
@@ -57,6 +55,15 @@ const Home = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      await logOut(); // Call signOut from context
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -68,14 +75,15 @@ const Home = () => {
         />
       ),
       headerRight: () => (
-        <Image
-          source={{ uri: catImageUrl }}
-          style={{
-            width: 40,
-            height: 40,
-            marginRight: 15,
-          }}
-        />
+        <TouchableOpacity onPress={handleSignOut}>
+          <MaterialCommunityIcons
+            name="logout"
+            style={{
+              fontSize: 25,
+              marginRight: 15,
+            }}
+          />
+        </TouchableOpacity>
       ),
     });
   }, [navigation]);
