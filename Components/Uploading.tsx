@@ -16,7 +16,7 @@ export function Uploading({
   progress,
 }: {
   image: any;
-  video: any;
+  video?: any;
   progress: any;
 }) {
   return (
@@ -33,7 +33,7 @@ export function Uploading({
       {/* Background blur */}
       <VibrancyView
         blurType="ultraThinMaterialDark"
-        blurAmount={2}
+        blurAmount={10}
         style={StyleSheet.absoluteFill}
       ></VibrancyView>
       {/* // Content blur */}
@@ -58,7 +58,7 @@ export function Uploading({
             }}
           />
         )}
-        {video && (
+        {/* {video && (
           <Video
             source={{
               uri: video,
@@ -73,7 +73,7 @@ export function Uploading({
             style={{ width: 200, height: 200 }}
             // useNativeControls
           />
-        )}
+        )} */}
         <Text style={{ fontSize: 12 }}>Uploading...</Text>
         <ProgressBar progress={progress} />
         <View

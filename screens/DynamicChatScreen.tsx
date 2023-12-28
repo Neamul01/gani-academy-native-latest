@@ -7,6 +7,7 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import {
@@ -22,6 +23,8 @@ import { useAuth } from "../context/AuthContext";
 import { database } from "../config/firebase";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import FileUpload from "../Components/FileUpload";
+import { UploadingAndroid } from "../Components/UploadingAndroid";
+import { Uploading } from "../Components/Uploading";
 
 type RouterParams = {
   params: {
@@ -34,12 +37,14 @@ const DynamicChatScreen = () => {
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [message, setMessage] = useState<string>("");
   const router = useRoute<RouteProp<RouterParams>>();
+  const Id = router.params.id;
+
+  const [image, setImage] = useState<string>("");
+  const [progress, setProgress] = useState<number>(0);
+  const [files, setFiles] = useState<DocumentData[]>([]);
 
   useLayoutEffect(() => {
-    const msgCollectionRef = collection(
-      database,
-      `groups/${router?.params?.id}/messages`
-    );
+    const msgCollectionRef = collection(database, `groups/${Id}/messages`);
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, (groups: DocumentData) => {
@@ -72,6 +77,14 @@ const DynamicChatScreen = () => {
 
   const renderMessage = ({ item }: { item: DocumentData }) => {
     const myMessage = item.sender === user.uid;
+    console.log("item", item);
+
+    const renderTextMessage = () => (
+      <Text style={styles.messageText}>{item.message}</Text>
+    );
+    const renderImageMessage = () => (
+      <Image source={{ uri: item.url }} style={styles.messageImage} />
+    );
 
     return (
       <View
@@ -82,7 +95,8 @@ const DynamicChatScreen = () => {
             : styles.otherMessageContainer,
         ]}
       >
-        <Text style={styles.messageText}>{item.message}</Text>
+        {/* <Text style={styles.messageText}>{item.message}</Text> */}
+        {item.fileType === "image" ? renderImageMessage() : renderTextMessage()}
         <Text style={styles.time}>
           {item.createdAt?.toDate().toLocaleDateString()}
         </Text>
@@ -96,6 +110,12 @@ const DynamicChatScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={100}
     >
+      {image &&
+        (Platform.OS === "ios" ? (
+          <Uploading image={image} progress={progress} />
+        ) : (
+          <UploadingAndroid image={image} progress={progress} />
+        ))}
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
@@ -103,7 +123,12 @@ const DynamicChatScreen = () => {
       />
       <View style={styles.inputContainer}>
         <View style={{ alignItems: "center", justifyContent: "center" }}>
-          <FileUpload setMessage={setMessage} />
+          <FileUpload
+            setImage={setImage}
+            setProgress={setProgress}
+            setMessage={setMessage}
+            Id={Id}
+          />
         </View>
         <TextInput
           multiline
@@ -156,6 +181,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#777",
     alignSelf: "flex-end",
+  },
+  messageImage: {
+    width: 200, // Adjust the size as needed
+    height: 200, // Adjust the size as needed
+    borderRadius: 10,
   },
 });
 

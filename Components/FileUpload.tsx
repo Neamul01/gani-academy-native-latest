@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import {
@@ -6,26 +12,36 @@ import {
   addDoc,
   collection,
   onSnapshot,
+  serverTimestamp,
 } from "firebase/firestore";
 import { database, storageDatabase } from "../config/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
+import { useAuth } from "../context/AuthContext";
 
 type FileUploadProps = {
   setMessage: Dispatch<SetStateAction<string>>;
+  Id: string;
+  setImage: Dispatch<SetStateAction<string>>;
+  setProgress: Dispatch<SetStateAction<number>>;
 };
 
-const FileUpload = ({ setMessage }: FileUploadProps) => {
-  const [image, setImage] = useState<string>("");
-  const [progress, setProgress] = useState<number>(0);
+const FileUpload = ({
+  setMessage,
+  Id,
+  setImage,
+  setProgress,
+}: FileUploadProps) => {
   const [files, setFiles] = useState<DocumentData[]>([]);
+  const { user } = useAuth();
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      collection(database, "files"),
+      collection(database, `groups/${Id}/messages`),
       (snapshot) => {
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
-            console.log("New file", change.doc.data());
+            // console.log("New file", change.doc.data());
             setFiles((prevFiles) => [...prevFiles, change.doc.data()]);
           }
         });
@@ -82,11 +98,15 @@ const FileUpload = ({ setMessage }: FileUploadProps) => {
 
   async function saveRecord(fileType: string, url: string, createdAt: string) {
     try {
-      const docRef = await addDoc(collection(database, "files"), {
-        fileType,
-        url,
-        createdAt,
-      });
+      const docRef = await addDoc(
+        collection(database, `groups/${Id}/messages`),
+        {
+          fileType,
+          url,
+          sender: user.uid,
+          createdAt: serverTimestamp(),
+        }
+      );
       console.log("document saved correctly", docRef.id);
     } catch (e) {
       console.log(e);
@@ -94,9 +114,11 @@ const FileUpload = ({ setMessage }: FileUploadProps) => {
   }
 
   return (
-    <TouchableOpacity onPress={pickImage}>
-      <FontAwesome name="photo" size={24} color="black" />
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity onPress={pickImage}>
+        <FontAwesome name="photo" size={24} color="black" />
+      </TouchableOpacity>
+    </>
   );
 };
 
