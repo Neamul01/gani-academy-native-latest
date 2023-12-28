@@ -21,6 +21,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { database } from "../config/firebase";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import FileUpload from "../Components/FileUpload";
 
 type RouterParams = {
   params: {
@@ -101,6 +102,9 @@ const DynamicChatScreen = () => {
         renderItem={renderMessage}
       />
       <View style={styles.inputContainer}>
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          <FileUpload setMessage={setMessage} />
+        </View>
         <TextInput
           multiline
           value={message}
