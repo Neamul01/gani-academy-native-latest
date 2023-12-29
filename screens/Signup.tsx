@@ -12,8 +12,9 @@ import {
   Alert,
 } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, database } from "../config/firebase";
 import { useNavigation } from "@react-navigation/native";
+import { addDoc, collection } from "firebase/firestore";
 const backImage = require("../assets/backImage.png");
 
 export default function Signup() {
@@ -21,14 +22,35 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const navigation = useNavigation<any>();
 
-  const onHandleSignup = () => {
+  const onHandleSignup = async () => {
+    const ref = collection(database, "users");
+
     if (email !== "" && password !== "") {
       createUserWithEmailAndPassword(auth, email, password)
-        .then(() => console.log("Signup success"))
-        .catch((err) => Alert.alert("Login error", err.message));
+        .then(async (result) => {
+          console.log("Signup success", {
+            uid: result.user.uid,
+            email: result.user.email,
+          });
+          const user = result.user; // Get the user from the result
+          try {
+            await addDoc(ref, {
+              uid: user.uid,
+              email: user.email,
+            });
+          } catch (error) {
+            console.error("Error saving user to Firestore", error);
+          }
+        })
+        .catch((err) => {
+          console.error("Signup error", err);
+          Alert.alert("Signup error", err.message);
+        });
+    } else {
+      // Handle the case where email or password is not provided
+      Alert.alert("Signup error", "Please fill in both email and password");
     }
   };
-
   return (
     <View style={styles.container}>
       <Image source={backImage} style={styles.backImage} />

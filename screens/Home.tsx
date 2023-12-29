@@ -25,7 +25,9 @@ const Home = () => {
   const navigation = useNavigation<any>();
   const [groupsCollectionRef, setGroupsCollectionRef] = useState<any>(null);
   const [groups, setGroups] = useState<any>([]);
-  const { logOut: logOut } = useAuth();
+  const { user, logOut: logOut } = useAuth();
+
+  console.log(user.uid);
 
   useEffect(() => {
     const ref = collection(database, "groups");

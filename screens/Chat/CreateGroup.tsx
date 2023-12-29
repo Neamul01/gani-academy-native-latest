@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { addDoc } from "firebase/firestore";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
+import useAdminUID from "../../hooks/useAdminUID";
 
 type RouterProps = {
   params: {
@@ -24,13 +25,21 @@ const CreateGroup = () => {
   const groupsCollectionRef = router.params?.groupsCollectionRef;
   const { user } = useAuth();
   const navigation = useNavigation();
+  const { adminUIDs } = useAdminUID();
 
   const startGroup = async () => {
+    console.log("adminUIDs", adminUIDs);
+    if (groupName.trim() === "") {
+      console.log("Please enter a group name");
+      return;
+    }
+
     try {
       await addDoc(groupsCollectionRef, {
         name: groupName,
         description: `Group #${Math.floor(Math.random() * 1000)}`,
         creator: user.uid,
+        members: [user.uid, ...adminUIDs],
       });
       navigation.goBack();
     } catch (error) {
@@ -94,3 +103,23 @@ const styles = StyleSheet.create({
     borderColor: "gray",
   },
 });
+
+// ------------rules
+
+// service cloud.firestore {
+//     match /databases/{database}/documents {
+
+//       // This rule allows anyone with your Firestore database reference to view, edit,
+//       // and delete all data in your Firestore database. It is useful for getting
+//       // started, but it is configured to expire after 30 days because it
+//       // leaves your app open to attackers. At that time, all client
+//       // requests to your Firestore database will be denied.
+//       //
+//       // Make sure to write security rules for your app before that time, or else
+//       // all client requests to your Firestore database will be denied until you Update
+//       // your rules
+//       match /{document=**} {
+//         allow read, write: if request.time < timestamp.date(2024, 1, 24);
+//       }
+//     }
+//   }
