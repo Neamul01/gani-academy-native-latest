@@ -25,7 +25,7 @@ const Home = () => {
   const navigation = useNavigation<any>();
   const [groupsCollectionRef, setGroupsCollectionRef] = useState<any>(null);
   const [groups, setGroups] = useState<any>([]);
-  const { user, logOut: logOut } = useAuth();
+  const { logOut: logOut } = useAuth();
 
   useEffect(() => {
     const ref = collection(database, "groups");
@@ -42,18 +42,6 @@ const Home = () => {
 
     return unsubscribe;
   }, []);
-
-  const startGroup = async () => {
-    try {
-      await addDoc(groupsCollectionRef, {
-        name: `Group #${Math.floor(Math.random() * 1000)}`,
-        description: "This is a chat group",
-        creator: user.uid,
-      });
-    } catch (error) {
-      console.log("error creating group", error);
-    }
-  };
 
   const handleSignOut = async () => {
     try {
@@ -97,13 +85,20 @@ const Home = () => {
             onPress={() => navigation.navigate("Group", { id: group.id })}
             style={styles.groupCard}
           >
-            <Text>{group.name}</Text>
+            <Text style={{ textTransform: "capitalize" }}>{group.name}</Text>
             <Text>{group.description}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
       <View>
-        <Pressable style={styles.fab} onPress={startGroup}>
+        <Pressable
+          style={styles.fab}
+          onPress={() =>
+            navigation.navigate("CreateGroup", {
+              groupsCollectionRef: groupsCollectionRef,
+            })
+          }
+        >
           <Ionicons name="add" size={24} color="white" />
         </Pressable>
       </View>
