@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "109579379887",
+    "project_id": "ganis-academy",
+    "storage_bucket": "ganis-academy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109579379887:android:09fd0e1d3c737e1bd6e05a",
+        "android_client_info": {
+          "package_name": "com.noman01.ganiacademy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109579379887-gikv1hubq1qdkgvsp1jpggup5plfsaha.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQM3MPJYH_vM2f_IhyGM2WvF2AOJ4TVVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109579379887-e15v8blgrl0733jujtoamjobl6covh5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

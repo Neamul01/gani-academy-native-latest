@@ -30,9 +30,10 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation<any>();
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+  const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: ANDROID_CLIENT_ID,
   });
+  // const [request, response, promptAsync] = Google.useAuthRequest({ expoClientId: config.expoClientId});
 
   const onHandleLogin = () => {
     if (email !== "" && password !== "") {
